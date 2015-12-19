@@ -18,4 +18,6 @@ This was created by myself as a fun project in order to get my feet wet with Go.
 - [ ] Update this readme to be more informative
 - [ ] Write basic wiki in order to remind myself how to use it, for the 2-3 blog posts I actually make / year
 - [ ] properly figure out packages, so my helper / private functions don't pollute the project
-- [ ] become more consistent with naming... i.e. article vs post
+- [x] become more consistent with naming... i.e. article vs post
+- [ ] make constants generic so as to presume the app is installed and not being run via `go run`
+- [ ] document website requirements. i.e. folder structure and template structure

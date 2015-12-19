@@ -19,7 +19,7 @@ func Publish(post string) {
 	htmlFileName := fmt.Sprintf("%s.html", strings.Replace(strings.ToLower(post), " ", "+", -1))
 	fmt.Println("going to publish: " + mdFileName)
 
-	file, err := os.Open(baseArticlePath + mdFileName)
+	file, err := os.Open(baseMarkdownPath + mdFileName)
 
 	if err != nil {
 		log.Fatal(err)
@@ -35,23 +35,23 @@ func Publish(post string) {
 
 	p.Draft = false
 	p.Date = time.Now()
-	generateArticle(p, htmlFileName)
+	generatePost(p, htmlFileName)
 	p.Update()
 
 	generateIndex()
 }
 
-// generateArticle is the helper function to actually create the .html file from the
+// generatePost is the helper function to actually create the .html file from the
 // Post
-func generateArticle(post *Post, htmlFileName string) {
-	fileName := baseTemplatePath + "/article.tmpl"
+func generatePost(post *Post, htmlFileName string) {
+	fileName := baseTemplatePath + "post.tmpl"
 	t, err := template.ParseFiles(fileName)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	f, err := os.Create(basePublushPath + htmlFileName)
+	f, err := os.Create(baseHTMLPath + htmlFileName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -68,9 +68,9 @@ func generateArticle(post *Post, htmlFileName string) {
 // Because the posts are already returned in descending date order, all we
 // have to do is create the HTML
 func generateIndex() {
-	posts := getPublishedArticles()
+	posts := getPublishedPosts()
 
-	fileName := baseTemplatePath + "/index.tmpl"
+	fileName := baseTemplatePath + "index.tmpl"
 	t, err := template.ParseFiles(fileName)
 
 	if err != nil {

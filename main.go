@@ -5,9 +5,9 @@ import (
 	"os"
 )
 
-const baseArticlePath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/posts/"
+const baseMarkdownPath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/md/"
 const baseTemplatePath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/templates/"
-const basePublushPath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/articles/"
+const baseHTMLPath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/html/"
 const baseRootPath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/"
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 		Publish(os.Args[2])
 		return
 	case "create":
-		fmt.Println("Create a blog post")
+		fmt.Println("Create a Post")
 		CreatePost(os.Args[2])
 		return
 	case "stats":

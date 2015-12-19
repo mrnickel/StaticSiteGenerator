@@ -57,7 +57,7 @@ func NewPostFromFile(fileInfo os.FileInfo) *Post {
 
 	var p *Post
 
-	file, err := os.Open(baseArticlePath + fileInfo.Name())
+	file, err := os.Open(baseMarkdownPath + fileInfo.Name())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -88,7 +88,7 @@ func NewPostFromFile(fileInfo os.FileInfo) *Post {
 // Update will update the .md file associated with this post. Typically
 // done after the post is published
 func (p *Post) Update() {
-	file, err := os.Create(baseArticlePath + fmt.Sprintf("%s.md", strings.Replace(strings.ToLower(p.Title), " ", "+", -1)))
+	file, err := os.Create(baseMarkdownPath + fmt.Sprintf("%s.md", strings.Replace(strings.ToLower(p.Title), " ", "+", -1)))
 	if err != nil {
 		panic(err)
 	}

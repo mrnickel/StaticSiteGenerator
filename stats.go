@@ -12,39 +12,39 @@ import (
 // namely how many are in draft state (draft = true), and
 // how many are in published state (draft = false)
 func GetStats() {
-	publishedArticles := getPublishedArticles()
-	draftArticles := getDraftArticles()
+	publishedPosts := getPublishedPosts()
+	draftPosts := getDraftPosts()
 
-	fmt.Printf("Number of published posts: %d\nNumber of drafts: %d\n", len(publishedArticles), len(draftArticles))
+	fmt.Printf("Number of published posts: %d\nNumber of drafts: %d\n", len(publishedPosts), len(draftPosts))
 }
 
-// ListDrafts will list the title of all posts that are draft = true
+// ListDrafts will list the title of all Posts that are draft = true
 func ListDrafts() {
-	articles := getDraftArticles()
-	for _, article := range articles {
-		fmt.Println(article.Title)
+	posts := getDraftPosts()
+	for _, p := range posts {
+		fmt.Println(p.Title)
 	}
 }
 
-// getDraftArticles is a helper function purely for readability
-// It issues a request to the getArticles function with the draft
+// getDraftPosts is a helper function purely for readability
+// It issues a request to the getPosts function with the draft
 // flage set to TRUE
-func getDraftArticles() []*Post {
-	return getArticles(true)
+func getDraftPosts() []*Post {
+	return getPosts(true)
 }
 
-// getPublishedArticles is a helper function purely for readability
-// It issues a request to the getArticles function with the draft
+// getPublishedPosts is a helper function purely for readability
+// It issues a request to the getPosts function with the draft
 // flag set to FALSE
-func getPublishedArticles() []*Post {
-	return getArticles(false)
+func getPublishedPosts() []*Post {
+	return getPosts(false)
 }
 
-// getArticles return an array of Post's that are in the proper draft state
+// getPosts return an array of Post's that are in the proper draft state
 // ordered by their date DESCENDING
-func getArticles(isDraft bool) []*Post {
-	var articles []*Post
-	fileInfos, err := ioutil.ReadDir(baseArticlePath)
+func getPosts(isDraft bool) []*Post {
+	var posts []*Post
+	fileInfos, err := ioutil.ReadDir(baseMarkdownPath)
 
 	if err != nil {
 		log.Fatal(err)
@@ -54,11 +54,11 @@ func getArticles(isDraft bool) []*Post {
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".md") {
 			post := NewPostFromFile(info)
 			if post.Draft == isDraft {
-				articles = append(articles, NewPostFromFile(info))
+				posts = append(posts, NewPostFromFile(info))
 			}
 		}
 	}
 
-	sort.Sort(PostsByDate(articles))
-	return articles
+	sort.Sort(PostsByDate(posts))
+	return posts
 }
