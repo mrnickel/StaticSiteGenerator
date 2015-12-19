@@ -22,3 +22,4 @@ This was created by myself as a fun project in order to get my feet wet with Go.
 - [ ] make constants generic so as to presume the app is installed and not being run via `go run`
 - [ ] document website requirements. i.e. folder structure and template structure
 - [ ] post to reddit / hackernews / twitter so as to get feedback
+- [ ] vendoring?
