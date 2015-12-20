@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/knieriem/markdown"
-	"github.com/mrnickel/StaticSiteGenerator/config"
+	"github.com/mrnickel/StaticSiteGenerator/constants"
 )
 
 // NewPostFromFile will create a new post based on the file
@@ -19,7 +19,7 @@ func NewPostFromFile(fileInfo os.FileInfo) *Post {
 
 	var p *Post
 
-	file, err := os.Open(config.MarkdownPath + fileInfo.Name())
+	file, err := os.Open(constants.MarkdownPath + fileInfo.Name())
 	if err != nil {
 		log.Fatal(err)
 	}

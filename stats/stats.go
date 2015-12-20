@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/mrnickel/StaticSiteGenerator/config"
+	"github.com/mrnickel/StaticSiteGenerator/constants"
 	"github.com/mrnickel/StaticSiteGenerator/post"
 )
 
@@ -47,7 +47,7 @@ func GetPublishedPosts() []*post.Post {
 // ordered by their date DESCENDING
 func getPosts(isDraft bool) []*post.Post {
 	var posts []*post.Post
-	fileInfos, err := ioutil.ReadDir(config.MarkdownPath)
+	fileInfos, err := ioutil.ReadDir(constants.MarkdownPath)
 
 	if err != nil {
 		log.Fatal(err)

@@ -1,4 +1,4 @@
-package config
+package constants
 
 const (
 	// MarkdownPath is the direcotry path to the written markdown files

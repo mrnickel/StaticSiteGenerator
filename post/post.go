@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mrnickel/StaticSiteGenerator/config"
+	"github.com/mrnickel/StaticSiteGenerator/constants"
 )
 
 // Post is a post that we can do stuff with
@@ -35,7 +35,7 @@ func NewPost(title string) *Post {
 // Update will update the .md file associated with this post. Typically
 // done after the post is published
 func (p *Post) Update() {
-	file, err := os.Create(config.MarkdownPath + fmt.Sprintf("%s.md", strings.Replace(strings.ToLower(p.Title), " ", "+", -1)))
+	file, err := os.Create(constants.MarkdownPath + fmt.Sprintf("%s.md", strings.Replace(strings.ToLower(p.Title), " ", "+", -1)))
 	if err != nil {
 		panic(err)
 	}

@@ -9,7 +9,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/mrnickel/StaticSiteGenerator/config"
+	"github.com/mrnickel/StaticSiteGenerator/constants"
 	"github.com/mrnickel/StaticSiteGenerator/post"
 	"github.com/mrnickel/StaticSiteGenerator/stats"
 )
@@ -23,7 +23,7 @@ func Publish(postTitle string) {
 	htmlFileName := fmt.Sprintf("%s.html", strings.Replace(strings.ToLower(postTitle), " ", "+", -1))
 	fmt.Println("going to publish: " + mdFileName)
 
-	file, err := os.Open(config.MarkdownPath + mdFileName)
+	file, err := os.Open(constants.MarkdownPath + mdFileName)
 
 	if err != nil {
 		log.Fatal(err)
@@ -48,14 +48,14 @@ func Publish(postTitle string) {
 // generatePost is the helper function to actually create the .html file from the
 // Post
 func generatePost(post *post.Post, htmlFileName string) {
-	fileName := config.TemplatePath + "post.tmpl"
+	fileName := constants.TemplatePath + "post.tmpl"
 	t, err := template.ParseFiles(fileName)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	f, err := os.Create(config.HTMLPath + htmlFileName)
+	f, err := os.Create(constants.HTMLPath + htmlFileName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,14 +74,14 @@ func generatePost(post *post.Post, htmlFileName string) {
 func generateIndex() {
 	posts := stats.GetPublishedPosts()
 
-	fileName := config.TemplatePath + "index.tmpl"
+	fileName := constants.TemplatePath + "index.tmpl"
 	t, err := template.ParseFiles(fileName)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	f, err := os.Create(config.RootPath + "index.html")
+	f, err := os.Create(constants.RootPath + "index.html")
 	if err != nil {
 		log.Fatal(err)
 	}
