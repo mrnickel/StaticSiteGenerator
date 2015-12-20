@@ -1,4 +1,4 @@
-package main
+package publish
 
 import (
 	"bufio"
@@ -8,18 +8,22 @@ import (
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/mrnickel/StaticSiteGenerator/config"
+	"github.com/mrnickel/StaticSiteGenerator/post"
+	"github.com/mrnickel/StaticSiteGenerator/stats"
 )
 
 // Publish will take the Post.Title of the item we wish to publish, generate the HTML from the
 // template, update the .md file's draft flag to false and re-generate the index page.
 // Maybe one day I'll add other flags, such as "+tweet" in order to connect to twitter
 // and post on my behalf
-func Publish(post string) {
-	mdFileName := fmt.Sprintf("%s.md", strings.Replace(strings.ToLower(post), " ", "+", -1))
-	htmlFileName := fmt.Sprintf("%s.html", strings.Replace(strings.ToLower(post), " ", "+", -1))
+func Publish(postTitle string) {
+	mdFileName := fmt.Sprintf("%s.md", strings.Replace(strings.ToLower(postTitle), " ", "+", -1))
+	htmlFileName := fmt.Sprintf("%s.html", strings.Replace(strings.ToLower(postTitle), " ", "+", -1))
 	fmt.Println("going to publish: " + mdFileName)
 
-	file, err := os.Open(baseMarkdownPath + mdFileName)
+	file, err := os.Open(config.MarkdownPath + mdFileName)
 
 	if err != nil {
 		log.Fatal(err)
@@ -31,7 +35,7 @@ func Publish(post string) {
 		log.Fatal(err)
 	}
 
-	p := NewPostFromFile(fileInfo)
+	p := post.NewPostFromFile(fileInfo)
 
 	p.Draft = false
 	p.Date = time.Now()
@@ -43,15 +47,15 @@ func Publish(post string) {
 
 // generatePost is the helper function to actually create the .html file from the
 // Post
-func generatePost(post *Post, htmlFileName string) {
-	fileName := baseTemplatePath + "post.tmpl"
+func generatePost(post *post.Post, htmlFileName string) {
+	fileName := config.TemplatePath + "post.tmpl"
 	t, err := template.ParseFiles(fileName)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	f, err := os.Create(baseHTMLPath + htmlFileName)
+	f, err := os.Create(config.HTMLPath + htmlFileName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -68,16 +72,16 @@ func generatePost(post *Post, htmlFileName string) {
 // Because the posts are already returned in descending date order, all we
 // have to do is create the HTML
 func generateIndex() {
-	posts := getPublishedPosts()
+	posts := stats.GetPublishedPosts()
 
-	fileName := baseTemplatePath + "index.tmpl"
+	fileName := config.TemplatePath + "index.tmpl"
 	t, err := template.ParseFiles(fileName)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	f, err := os.Create(baseRootPath + "index.html")
+	f, err := os.Create(config.RootPath + "index.html")
 	if err != nil {
 		log.Fatal(err)
 	}

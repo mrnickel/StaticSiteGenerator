@@ -1,4 +1,4 @@
-package main
+package stats
 
 import (
 	"fmt"
@@ -6,45 +6,48 @@ import (
 	"log"
 	"sort"
 	"strings"
+
+	"github.com/mrnickel/StaticSiteGenerator/config"
+	"github.com/mrnickel/StaticSiteGenerator/post"
 )
 
 // GetStats will print out a list of posts in the various states
 // namely how many are in draft state (draft = true), and
 // how many are in published state (draft = false)
 func GetStats() {
-	publishedPosts := getPublishedPosts()
-	draftPosts := getDraftPosts()
+	publishedPosts := GetPublishedPosts()
+	draftPosts := GetDraftPosts()
 
 	fmt.Printf("Number of published posts: %d\nNumber of drafts: %d\n", len(publishedPosts), len(draftPosts))
 }
 
 // ListDrafts will list the title of all Posts that are draft = true
 func ListDrafts() {
-	posts := getDraftPosts()
+	posts := GetDraftPosts()
 	for _, p := range posts {
 		fmt.Println(p.Title)
 	}
 }
 
-// getDraftPosts is a helper function purely for readability
+// GetDraftPosts is a helper function purely for readability
 // It issues a request to the getPosts function with the draft
 // flage set to TRUE
-func getDraftPosts() []*Post {
+func GetDraftPosts() []*post.Post {
 	return getPosts(true)
 }
 
-// getPublishedPosts is a helper function purely for readability
+// GetPublishedPosts is a helper function purely for readability
 // It issues a request to the getPosts function with the draft
 // flag set to FALSE
-func getPublishedPosts() []*Post {
+func GetPublishedPosts() []*post.Post {
 	return getPosts(false)
 }
 
 // getPosts return an array of Post's that are in the proper draft state
 // ordered by their date DESCENDING
-func getPosts(isDraft bool) []*Post {
-	var posts []*Post
-	fileInfos, err := ioutil.ReadDir(baseMarkdownPath)
+func getPosts(isDraft bool) []*post.Post {
+	var posts []*post.Post
+	fileInfos, err := ioutil.ReadDir(config.MarkdownPath)
 
 	if err != nil {
 		log.Fatal(err)
@@ -52,13 +55,13 @@ func getPosts(isDraft bool) []*Post {
 
 	for _, info := range fileInfos {
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".md") {
-			post := NewPostFromFile(info)
+			post := post.NewPostFromFile(info)
 			if post.Draft == isDraft {
-				posts = append(posts, NewPostFromFile(info))
+				posts = append(posts, post)
 			}
 		}
 	}
 
-	sort.Sort(PostsByDate(posts))
+	sort.Sort(post.PostsByDate(posts))
 	return posts
 }

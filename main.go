@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"os"
-)
 
-const baseMarkdownPath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/md/"
-const baseTemplatePath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/templates/"
-const baseHTMLPath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/html/"
-const baseRootPath string = "/Users/ryannickel/Documents/Pending/mrnickel.github.io/"
+	"github.com/mrnickel/StaticSiteGenerator/publish"
+	"github.com/mrnickel/StaticSiteGenerator/stats"
+)
 
 func main() {
 
@@ -17,7 +15,7 @@ func main() {
 	switch command {
 	case "publish":
 		fmt.Println("Publish the markdown file specified")
-		Publish(os.Args[2])
+		publish.Publish(os.Args[2])
 		return
 	case "create":
 		fmt.Println("Create a Post")
@@ -25,10 +23,10 @@ func main() {
 		return
 	case "stats":
 		fmt.Println("Get the stats for this site")
-		GetStats()
+		stats.GetStats()
 		return
 	case "listdrafts":
-		ListDrafts()
+		stats.ListDrafts()
 		return
 	}
 }
