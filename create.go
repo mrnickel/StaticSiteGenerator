@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/mrnickel/StaticSiteGenerator/constants"
 	"github.com/mrnickel/StaticSiteGenerator/post"
@@ -11,7 +10,7 @@ import (
 
 // CreatePost creates a blog post
 func CreatePost(title string) {
-	file, err := os.Create(constants.MarkdownPath + fmt.Sprintf("%s.md", strings.Replace(strings.ToLower(title), " ", "+", -1)))
+	file, err := os.Create(constants.MarkdownPath + fmt.Sprintf("%s.md", post.GenerateFileNamePrefix(title)))
 	if err != nil {
 		panic(err)
 	}
