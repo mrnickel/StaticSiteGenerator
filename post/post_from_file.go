@@ -63,6 +63,8 @@ func parseHeader(scanner *bufio.Scanner) (*Post, error) {
 			p.Title = parseTitle(scanner.Text())
 		}
 
+		p.FileNamePrefix = GenerateFileNamePrefix(p.Title)
+
 		if scanner.Text() == "+++" {
 			scanner.Scan() // get us past the +++ line
 			return p, nil

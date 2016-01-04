@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 	"text/template"
 	"time"
 
@@ -19,8 +18,8 @@ import (
 // Maybe one day I'll add other flags, such as "+tweet" in order to connect to twitter
 // and post on my behalf
 func Publish(postTitle string) {
-	mdFileName := fmt.Sprintf("%s.md", strings.Replace(strings.ToLower(postTitle), " ", "+", -1))
-	htmlFileName := fmt.Sprintf("%s.html", strings.Replace(strings.ToLower(postTitle), " ", "+", -1))
+	mdFileName := fmt.Sprintf("%s.md", post.GenerateFileNamePrefix(postTitle))
+	htmlFileName := fmt.Sprintf("%s.html", post.GenerateFileNamePrefix(postTitle))
 	fmt.Println("going to publish: " + mdFileName)
 
 	file, err := os.Open(constants.MarkdownPath + mdFileName)
