@@ -23,10 +23,10 @@ In order to use this VERY basic system you will have to follow a few basic rules
 
 ## Folder structure
 We assume a very specific folder structure:
-- /
--- /html _This is where the generated static HTML files will go_
--- /md _This is where `StaticSiteGenerator create` will put the generated markdown files_
--- /templates _This is where the template files go.
+- / _Root path to your site_
+	- /html _This is where the generated static HTML files will go_
+	- /md _This is where `StaticSiteGenerator create` will put the generated markdown files_
+	- /templates _This is where the template files go.
 
 ##Templates
 The templates are pretty basic and utilize Go's built in [template package](https://golang.org/pkg/html/template/). All of the placeholders are the Post struct's fields
