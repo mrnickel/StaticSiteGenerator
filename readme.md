@@ -13,10 +13,10 @@ This project essentially has 2 things that it does
 2. It parses through all of the markdown files creating static html versions of it
 
 # Commands
-- StaticSiteGenerator publish "*title of post*"
-- StaticSiteGenerator create "*title of post*"
-- StaticSiteGenerator stats
-- StaticSiteGenerator listdrafts
+- `StaticSiteGenerator publish "*title of post*"`
+- `StaticSiteGenerator create "*title of post*"`
+- `StaticSiteGenerator stats`
+- `StaticSiteGenerator listdrafts`
 
 #Requirements
 In order to use this VERY basic system you will have to follow a few basic rules:
