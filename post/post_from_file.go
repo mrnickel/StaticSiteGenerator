@@ -2,15 +2,14 @@ package post
 
 import (
 	"bufio"
-	"bytes"
 	"errors"
 	"log"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/knieriem/markdown"
 	"github.com/mrnickel/StaticSiteGenerator/constants"
+	"github.com/russross/blackfriday"
 )
 
 // NewPostFromFile will create a new post based on the file
@@ -100,10 +99,10 @@ func parseTitle(titleLine string) string {
 // convertPostToHtml will convert the Post.content markdown
 // into an HTML file
 func convertContentToHTML(p *Post) string {
-	reader := bytes.NewReader([]byte(p.MDContent))
-	parser := markdown.NewParser(&markdown.Extensions{Smart: true})
-	dst := new(bytes.Buffer)
-	parser.Markdown(reader, markdown.ToHTML(dst))
+	// reader := bytes.NewReader([]byte(p.MDContent))
+	// parser := .NewParser(&markdown.Extensions{Smart: true})
+	// dst := new(bytes.Buffer)
+	html := blackfriday.MarkdownCommon([]byte(p.MDContent))
 
-	return dst.String()
+	return string(html[:])
 }
