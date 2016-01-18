@@ -50,7 +50,8 @@ type Post struct {
 - [x] become more consistent with naming... i.e. article vs post
 - [x] make constants generic so as to presume the app is installed and not being run via `go run`
 - [x] document website requirements. i.e. folder structure and template structure
-- [ ] post to reddit / hackernews / twitter so as to get feedback
+- [x] post to reddit / hackernews / twitter so as to get feedback
+- [ ] create *preview* function to see what my markdown looks like when in the templates
 - [ ] vendoring?
 - [ ] RSS feed generation
 - [ ] refactor code to be based around post struct
