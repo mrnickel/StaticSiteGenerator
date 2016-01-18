@@ -53,3 +53,7 @@ type Post struct {
 - [ ] post to reddit / hackernews / twitter so as to get feedback
 - [ ] vendoring?
 - [ ] RSS feed generation
+- [ ] refactor code to be based around post struct
+- [ ] put everything under root as outlined in (reference article here)
+- [ ] create **newsite** command
+- [ ] better check user data from start so as to not panic and quit right off the bat (better error handling)
