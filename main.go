@@ -47,7 +47,7 @@ func main() {
 		GetStats()
 		return
 	case "listdrafts":
-		// stats.ListDrafts()
+		ListDrafts()
 		return
 	case "newsite":
 		fmt.Println("TODO!")

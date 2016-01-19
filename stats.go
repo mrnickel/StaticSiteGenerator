@@ -24,7 +24,7 @@ func GetStats() {
 func ListDrafts() {
 	posts := GetDraftPosts()
 	for _, p := range posts {
-		fmt.Println(p.Title)
+		fmt.Println(p.Title())
 	}
 }
 
