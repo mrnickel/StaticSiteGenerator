@@ -55,6 +55,6 @@ type Post struct {
 - [ ] vendoring?
 - [ ] RSS feed generation
 - [ ] refactor code to be based around post struct
-- [ ] put everything under root as outlined in (reference article here)
+- [ ] put everything under root as outlined in Peter Bourgon's [Go: Best Practices for Production Environments](http://peter.bourgon.org/go-in-production/)
 - [ ] create **newsite** command
 - [ ] better check user data from start so as to not panic and quit right off the bat (better error handling)

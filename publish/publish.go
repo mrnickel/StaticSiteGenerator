@@ -1,101 +1,88 @@
 package publish
 
-import (
-	"bufio"
-	"fmt"
-	"log"
-	"os"
-	"text/template"
-	"time"
+// // Publish will take the Post.Title of the item we wish to publish, generate the HTML from the
+// // template, update the .md file's draft flag to false and re-generate the index page.
+// // Maybe one day I'll add other flags, such as "+tweet" in order to connect to twitter
+// // and post on my behalf
+// func Publish(postTitle string) {
+// 	mdFileName := fmt.Sprintf("%s.md", post.GenerateFileNamePrefix(postTitle))
+// 	htmlFileName := fmt.Sprintf("%s.html", post.GenerateFileNamePrefix(postTitle))
+// 	fmt.Println("going to publish: " + mdFileName)
 
-	"github.com/mrnickel/StaticSiteGenerator/constants"
-	"github.com/mrnickel/StaticSiteGenerator/post"
-	"github.com/mrnickel/StaticSiteGenerator/stats"
-)
+// 	file, err := os.Open(constants.MarkdownPath + mdFileName)
 
-// Publish will take the Post.Title of the item we wish to publish, generate the HTML from the
-// template, update the .md file's draft flag to false and re-generate the index page.
-// Maybe one day I'll add other flags, such as "+tweet" in order to connect to twitter
-// and post on my behalf
-func Publish(postTitle string) {
-	mdFileName := fmt.Sprintf("%s.md", post.GenerateFileNamePrefix(postTitle))
-	htmlFileName := fmt.Sprintf("%s.html", post.GenerateFileNamePrefix(postTitle))
-	fmt.Println("going to publish: " + mdFileName)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	file, err := os.Open(constants.MarkdownPath + mdFileName)
+// 	fileInfo, err := file.Stat()
 
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	fileInfo, err := file.Stat()
+// 	p := post.NewPostFromFile(fileInfo)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	p.Draft = false
+// 	p.Date = time.Now()
+// 	generatePost(p, htmlFileName)
+// 	p.Update()
 
-	p := post.NewPostFromFile(fileInfo)
+// 	generateIndex()
+// }
 
-	p.Draft = false
-	p.Date = time.Now()
-	generatePost(p, htmlFileName)
-	p.Update()
+// // generatePost is the helper function to actually create the .html file from the
+// // Post
+// func generatePost(post *post.Post, htmlFileName string) {
+// 	fileName := constants.TemplatePath + "post.tmpl"
+// 	t, err := template.ParseFiles(fileName)
 
-	generateIndex()
-}
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-// generatePost is the helper function to actually create the .html file from the
-// Post
-func generatePost(post *post.Post, htmlFileName string) {
-	fileName := constants.TemplatePath + "post.tmpl"
-	t, err := template.ParseFiles(fileName)
+// 	f, err := os.Create(constants.HTMLPath + htmlFileName)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	defer f.Close()
 
-	f, err := os.Create(constants.HTMLPath + htmlFileName)
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	w := bufio.NewWriter(f)
 
-	defer f.Close()
+// 	t.Execute(w, post)
+// 	w.Flush()
+// }
 
-	w := bufio.NewWriter(f)
+// // generateIndex loops through all of the Posts that have been published.
+// // Because the posts are already returned in descending date order, all we
+// // have to do is create the HTML
+// func generateIndex() {
+// 	posts := stats.GetPublishedPosts()
 
-	t.Execute(w, post)
-	w.Flush()
-}
+// 	fileName := constants.TemplatePath + "index.tmpl"
+// 	t, err := template.ParseFiles(fileName)
 
-// generateIndex loops through all of the Posts that have been published.
-// Because the posts are already returned in descending date order, all we
-// have to do is create the HTML
-func generateIndex() {
-	posts := stats.GetPublishedPosts()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	fileName := constants.TemplatePath + "index.tmpl"
-	t, err := template.ParseFiles(fileName)
+// 	f, err := os.Create(constants.RootPath + "index.html")
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	defer f.Close()
 
-	f, err := os.Create(constants.RootPath + "index.html")
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	w := bufio.NewWriter(f)
 
-	defer f.Close()
+// 	t.ExecuteTemplate(w, "header", nil)
 
-	w := bufio.NewWriter(f)
+// 	for _, post := range posts {
+// 		t.ExecuteTemplate(w, "body", post)
+// 	}
 
-	t.ExecuteTemplate(w, "header", nil)
+// 	t.ExecuteTemplate(w, "footer", nil)
+// 	w.Flush()
 
-	for _, post := range posts {
-		t.ExecuteTemplate(w, "body", post)
-	}
-
-	t.ExecuteTemplate(w, "footer", nil)
-	w.Flush()
-
-}
+// }
