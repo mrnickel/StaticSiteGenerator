@@ -6,8 +6,6 @@ import (
 	"log"
 	"sort"
 	"strings"
-
-	"github.com/mrnickel/StaticSiteGenerator/constants"
 )
 
 // GetStats will print out a list of posts in the various states
@@ -46,7 +44,7 @@ func GetPublishedPosts() []Post {
 // ordered by their date DESCENDING
 func getPosts(isDraft bool) []Post {
 	var posts []Post
-	fileInfos, err := ioutil.ReadDir(constants.MarkdownPath)
+	fileInfos, err := ioutil.ReadDir(MarkdownPath)
 
 	if err != nil {
 		log.Fatal(err)
