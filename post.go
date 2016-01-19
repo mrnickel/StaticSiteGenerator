@@ -26,13 +26,9 @@ const (
 // Post is an interface ontop of the post struct
 type Post interface {
 	Date() time.Time
-	// SetDate(time.Time)
 	Draft() bool
-	// SetDraft(bool)
 	Title() string
-	// SetTitle(string)
 	MarkdownContent() string
-	// SetMarkdownContent(string)
 	HTMLContent() string
 	MarkdownPath() string
 	HTMLPath() string
@@ -69,18 +65,10 @@ func (p *post) Date() time.Time {
 	return p.date
 }
 
-// func (p *post) SetDate(time.Time date) {
-// 	p.date = date
-// }
-
 // Draft returns the post structs private draft field
 func (p *post) Draft() bool {
 	return p.draft
 }
-
-// func (p *post) SetDraft(bool draft) {
-// 	p.draft = draft;
-// }
 
 // Title returns the post structs private title field
 func (p *post) Title() string {
@@ -226,6 +214,45 @@ func (p *post) Publish() error {
 	w := bufio.NewWriter(f)
 
 	t.Execute(w, p)
+	w.Flush()
+
+	err = generateIndex()
+	if err != nil {
+		return err
+	}
+	// now we gotta do the index page
+	return nil
+}
+
+// generateIndex loops through all of the Posts that have been published.
+// Because the posts are already returned in descending date order, all we
+// have to do is create the HTML
+func generateIndex() error {
+	posts := GetPublishedPosts()
+
+	fileName := TemplatePath + "/index.tmpl"
+	t, err := template.ParseFiles(fileName)
+
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(RootPath + "index.html")
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	w := bufio.NewWriter(f)
+
+	t.ExecuteTemplate(w, "header", nil)
+
+	for _, post := range posts {
+		t.ExecuteTemplate(w, "body", post)
+	}
+
+	t.ExecuteTemplate(w, "footer", nil)
 	w.Flush()
 	return nil
 
