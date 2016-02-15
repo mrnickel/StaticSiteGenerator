@@ -44,6 +44,8 @@ type Post struct {
 ```
 
 # TODO
+- [ ] Add spell checker
+- [ ] Add function to verify links are correct
 - [x] Update this readme to be more informative
 - [x] Write basic wiki in order to remind myself how to use it, for the 2-3 blog posts I actually make / year
 - [x] properly figure out packages, so my helper / private functions don't pollute the project
