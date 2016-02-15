@@ -51,7 +51,7 @@ type Post struct {
 - [x] make constants generic so as to presume the app is installed and not being run via `go run`
 - [x] document website requirements. i.e. folder structure and template structure
 - [x] post to reddit / hackernews / twitter so as to get feedback
-- [ ] create *preview* function to see what my markdown looks like when in the templates
+- [x] create *preview* function to see what my markdown looks like when in the templates
 - [ ] vendoring?
 - [ ] RSS feed generation
 - [x] refactor code to be based around post struct

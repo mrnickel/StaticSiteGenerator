@@ -52,6 +52,24 @@ func main() {
 	case "newsite":
 		fmt.Println("TODO!")
 		return
+	case "preview":
+		tmpP := NewPost(os.Args[2])
+		file, err := os.Open(tmpP.MarkdownPath())
+		if err != nil {
+			log.Fatal(err)
+		}
+		fileInfo, err := file.Stat()
+		if err != nil {
+			log.Fatal(err)
+		}
+		p, err := NewPostFromFile(fileInfo)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = p.Preview()
+		if err != nil {
+			log.Fatal(err)
+		}
 	default:
 		printHelp()
 	}
@@ -63,5 +81,6 @@ func printHelp() {
 	fmt.Println("create \"Blog Title here\"")
 	fmt.Println("stats (this will list stats about your site)")
 	fmt.Println("listdrafts (this will list the titles of all your posts still in draft mode)")
+	fmt.Println("preview \"Blog Title here\"")
 	fmt.Println("newsite (creates a new site -- still needs to be implemented)")
 }

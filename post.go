@@ -35,6 +35,7 @@ type Post interface {
 	Publish() error
 	Update()
 	String() string
+	Preview() error
 }
 
 // post is a post that we can do stuff with
@@ -220,8 +221,37 @@ func (p *post) Publish() error {
 	if err != nil {
 		return err
 	}
+
+	err = generateRss()
+	if err != nil {
+		return err
+	}
 	// now we gotta do the index page
 	return nil
+}
+
+func (p *post) Preview() error {
+	fileName := TemplatePath + "/post.tmpl"
+	t, err := template.ParseFiles(fileName)
+
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(p.HTMLPath())
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	w := bufio.NewWriter(f)
+
+	t.Execute(w, p)
+	w.Flush()
+
+	return nil
+
 }
 
 // generateIndex loops through all of the Posts that have been published.
@@ -255,5 +285,34 @@ func generateIndex() error {
 	t.ExecuteTemplate(w, "footer", nil)
 	w.Flush()
 	return nil
+}
 
+func generateRss() error {
+	posts := GetPublishedPosts()
+
+	fileName := TemplatePath + "/rss.tmpl"
+	t, err := template.ParseFiles(fileName)
+
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(RootPath + "rss.xml")
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	w := bufio.NewWriter(f)
+
+	t.ExecuteTemplate(w, "header", nil)
+
+	for _, post := range posts {
+		t.ExecuteTemplate(w, "body", post)
+	}
+
+	t.ExecuteTemplate(w, "footer", nil)
+	w.Flush()
+	return nil
 }
