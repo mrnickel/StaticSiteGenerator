@@ -45,6 +45,7 @@ type Post struct {
 ```
 
 # TODO
+- [ ] have "preview" start a server session in order to serve up the page
 - [ ] Add "stats" function to post. This will tell you # of typos, how long it's been in draft mode and the number of words
 - [ ] Add spell checker
 - [ ] Add function to verify links are correct

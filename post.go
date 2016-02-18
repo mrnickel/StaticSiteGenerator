@@ -108,17 +108,17 @@ func (p *post) HTMLPath() string {
 // potentially write out to a file
 func (p *post) String() string {
 	var buffer bytes.Buffer
-	buffer.WriteString("+++\n")
-	buffer.WriteString(fmt.Sprintf("date = %s\n", p.date.Format(time.RFC3339)))
+	buffer.WriteString("---\n")
+	buffer.WriteString(fmt.Sprintf("date: %s\n", p.date.Format(time.RFC3339)))
 
 	if p.draft {
-		buffer.WriteString("draft = true\n")
+		buffer.WriteString("draft: true\n")
 	} else {
-		buffer.WriteString("draft = false\n")
+		buffer.WriteString("draft: false\n")
 	}
 
-	buffer.WriteString("title = " + p.title + "\n")
-	buffer.WriteString("+++\n")
+	buffer.WriteString("title: " + p.title + "\n")
+	buffer.WriteString("---\n")
 	buffer.WriteString("\n")
 
 	buffer.WriteString(p.markdownContent)
@@ -167,18 +167,18 @@ func NewPostFromFile(fileInfo os.FileInfo) (Post, error) {
 	parsingHeader := false
 
 	for scanner.Scan() {
-		if scanner.Text() == "+++" && !parsingHeader {
+		if scanner.Text() == "---" && !parsingHeader {
 			parsingHeader = true
 		} else if parsingHeader && strings.HasPrefix(scanner.Text(), "date") {
-			dateStr := strings.TrimPrefix(scanner.Text(), "date = ")
+			dateStr := strings.TrimPrefix(scanner.Text(), "date: ")
 			tmpPost.date, _ = time.Parse(time.RFC3339, dateStr)
 		} else if parsingHeader && strings.HasPrefix(scanner.Text(), "draft") {
-			if strings.TrimPrefix(scanner.Text(), "draft = ") == "true" {
+			if strings.TrimPrefix(scanner.Text(), "draft: ") == "true" {
 				tmpPost.draft = true
 			}
 		} else if parsingHeader && strings.HasPrefix(scanner.Text(), "title") {
-			tmpPost.title = strings.TrimPrefix(scanner.Text(), "title = ")
-		} else if parsingHeader && scanner.Text() == "+++" {
+			tmpPost.title = strings.TrimPrefix(scanner.Text(), "title: ")
+		} else if parsingHeader && scanner.Text() == "---" {
 		} else if !parsingHeader && tmpPost.MarkdownContent() == "" {
 			tmpPost.markdownContent = scanner.Text()
 		} else {
