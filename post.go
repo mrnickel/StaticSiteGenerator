@@ -36,6 +36,7 @@ type Post interface {
 	Update()
 	String() string
 	Preview() error
+	Summary() string
 }
 
 // post is a post that we can do stuff with
@@ -84,7 +85,6 @@ func (p *post) MarkdownContent() string {
 // HTMLContent returns the post structs private hTMLContent field
 func (p *post) HTMLContent() string {
 	html := blackfriday.MarkdownCommon([]byte(p.markdownContent))
-
 	return string(html[:])
 }
 
@@ -124,6 +124,18 @@ func (p *post) String() string {
 	buffer.WriteString(p.markdownContent)
 
 	return buffer.String()
+}
+
+// Returns the first paragraph in the post
+func (p *post) Summary() string {
+	paragraphs := strings.Split(p.MarkdownContent(), "\n")
+
+	if len(paragraphs) == 0 {
+		panic("shit")
+	}
+
+	html := blackfriday.MarkdownCommon([]byte(paragraphs[0]))
+	return string(html[:])
 }
 
 // Update will update the .md file associated with this post. Typically
@@ -184,6 +196,8 @@ func NewPostFromFile(fileInfo os.FileInfo) (Post, error) {
 		} else {
 			tmpPost.markdownContent = tmpPost.MarkdownContent() + "\n" + scanner.Text()
 		}
+
+		tmpPost.markdownContent = strings.TrimSpace(tmpPost.markdownContent)
 	}
 
 	return tmpPost, nil
