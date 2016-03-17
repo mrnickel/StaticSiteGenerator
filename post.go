@@ -367,7 +367,7 @@ func generateRss() error {
 	// t.ExecuteTemplate(w, "header", nil)
 	// c := new(Context)
 	// c.Posts = posts
-	t.Execute(w, posts)
+	t.Execute(w, posts[0:PageSize])
 	// for _, post := range posts {
 	// 	t.ExecuteTemplate(w, "body", post)
 	// }
