@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"math"
 	"os"
 	"strings"
 	"text/template"
@@ -21,6 +22,8 @@ const (
 	HTMLPath = "html"
 	// RootPath is the directory path to the root of the website
 	RootPath = ""
+	// The number of posts in a page
+	PageSize = 10
 )
 
 // Post is an interface ontop of the post struct
@@ -38,6 +41,11 @@ type Post interface {
 	Preview() error
 	Summary() string
 }
+
+// An array of posts that we can use in the templates
+// type Context struct {
+// 	Posts []Post
+// }
 
 // post is a post that we can do stuff with
 type post struct {
@@ -281,23 +289,59 @@ func generateIndex() error {
 		return err
 	}
 
-	f, err := os.Create(RootPath + "index.html")
-	if err != nil {
-		return err
+	numItems := len(posts)
+
+	numPages := int(math.Ceil(float64(numItems) / float64(PageSize)))
+
+	for page := 1; page <= numPages; page++ {
+		startIndex := (page - 1) * PageSize
+		if page > 1 {
+			startIndex = startIndex + 1
+		}
+
+		endIndex := startIndex + PageSize
+		if endIndex > len(posts) {
+			endIndex = len(posts)
+		}
+
+		fmt.Printf("Page %d, %d - %d\n", page, startIndex, endIndex)
+
+		indexPage := "index.html"
+
+		if page > 1 {
+			indexPage = fmt.Sprintf("index-%d.html", page)
+		}
+
+		f, err := os.Create(RootPath + indexPage)
+		if err != nil {
+			return err
+		}
+
+		defer f.Close()
+
+		w := bufio.NewWriter(f)
+		indexData := new(Index)
+		indexData.Posts = posts[startIndex:endIndex]
+		indexData.HasNext = false
+		indexData.HasPrevious = false
+		if page < numPages {
+			indexData.HasNext = true
+			indexData.NextPage = fmt.Sprintf("index-%d", page+1)
+		}
+		if page > 1 {
+			indexData.HasPrevious = true
+			indexData.PreviousPage = "index"
+
+			if page > 2 {
+				indexData.PreviousPage = fmt.Sprintf("index-%d", page-1)
+			}
+
+		}
+		t.Execute(w, indexData)
+
+		w.Flush()
 	}
 
-	defer f.Close()
-
-	w := bufio.NewWriter(f)
-
-	t.ExecuteTemplate(w, "header", nil)
-
-	for _, post := range posts {
-		t.ExecuteTemplate(w, "body", post)
-	}
-
-	t.ExecuteTemplate(w, "footer", nil)
-	w.Flush()
 	return nil
 }
 
@@ -320,13 +364,15 @@ func generateRss() error {
 
 	w := bufio.NewWriter(f)
 
-	t.ExecuteTemplate(w, "header", nil)
+	// t.ExecuteTemplate(w, "header", nil)
+	// c := new(Context)
+	// c.Posts = posts
+	t.Execute(w, posts)
+	// for _, post := range posts {
+	// 	t.ExecuteTemplate(w, "body", post)
+	// }
 
-	for _, post := range posts {
-		t.ExecuteTemplate(w, "body", post)
-	}
-
-	t.ExecuteTemplate(w, "footer", nil)
+	// t.ExecuteTemplate(w, "footer", nil)
 	w.Flush()
 	return nil
 }

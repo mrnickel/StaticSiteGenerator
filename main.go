@@ -84,6 +84,10 @@ func main() {
 
 		http.HandleFunc("/", staticHandler)
 		http.ListenAndServe(":8080", nil)
+	case "standup":
+		fmt.Println("Now listening on port 8080. Visit http://localhost:8080")
+		http.HandleFunc("/", staticHandler)
+		http.ListenAndServe(":8080", nil)
 
 	default:
 		printHelp()
@@ -98,9 +102,17 @@ func printHelp() {
 	fmt.Println("listdrafts (this will list the titles of all your posts still in draft mode)")
 	fmt.Println("preview \"Blog Title here\"")
 	fmt.Println("newsite (creates a new site -- still needs to be implemented)")
+	fmt.Println("standup (this will start a web server that can handle requests)")
 }
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {
+
+	if len(r.URL.Path) <= 1 {
+		r.URL.Path = "/index.html"
+		// fmt.Println("heh")
+		// return
+	}
+
 	file, err := os.Open(r.URL.Path[1:])
 	if err != nil {
 		panic(err)
