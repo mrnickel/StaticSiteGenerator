@@ -61,7 +61,7 @@ type Post struct {
 - [x] post to reddit / hackernews / twitter so as to get feedback
 - [x] create *preview* function to see what my markdown looks like when in the templates
 - [ ] vendoring?
-- [ ] RSS feed generation
+- [x] RSS feed generation
 - [x] refactor code to be based around post struct
 - [x] put everything under root as outlined in Peter Bourgon's [Go: Best Practices for Production Environments](http://peter.bourgon.org/go-in-production/)
 - [ ] create **newsite** command

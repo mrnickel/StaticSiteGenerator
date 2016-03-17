@@ -301,7 +301,7 @@ func generateIndex() error {
 
 		endIndex := startIndex + PageSize
 		if endIndex > len(posts) {
-			endIndex = len(posts)
+			endIndex = len(posts) - 1
 		}
 
 		fmt.Printf("Page %d, %d - %d\n", page, startIndex, endIndex)
@@ -364,15 +364,13 @@ func generateRss() error {
 
 	w := bufio.NewWriter(f)
 
-	// t.ExecuteTemplate(w, "header", nil)
-	// c := new(Context)
-	// c.Posts = posts
-	t.Execute(w, posts[0:PageSize])
-	// for _, post := range posts {
-	// 	t.ExecuteTemplate(w, "body", post)
-	// }
+	endIndex := PageSize
+	if endIndex > len(posts) {
+		endIndex = len(posts) - 1
+	}
 
-	// t.ExecuteTemplate(w, "footer", nil)
+	t.Execute(w, posts[0:endIndex])
+
 	w.Flush()
 	return nil
 }
