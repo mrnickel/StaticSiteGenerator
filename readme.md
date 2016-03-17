@@ -48,10 +48,10 @@ type Post struct {
 - [x] only show the first paragraph on index pages
 - [x] have "preview" start a server session in order to serve up the page
 - [ ] Add "stats" function to post. This will tell you # of typos, how long it's been in draft mode and the number of words
-- [ ] Add spell checker
-- [ ] Add function to verify links are correct
-- [ ] Limit index generation to 10 items per page
-- [ ] Add pagination
+- [ ]~~Add spell checker~~
+- [ ]~~ Add function to verify links are correct~~
+- [x] Limit index generation to 10 items per page
+- [x] Add pagination
 - [x] Update this readme to be more informative
 - [x] Write basic wiki in order to remind myself how to use it, for the 2-3 blog posts I actually make / year
 - [x] properly figure out packages, so my helper / private functions don't pollute the project
