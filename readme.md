@@ -48,8 +48,8 @@ type Post struct {
 - [x] only show the first paragraph on index pages
 - [x] have "preview" start a server session in order to serve up the page
 - [ ] Add "stats" function to post. This will tell you # of typos, how long it's been in draft mode and the number of words
-- [ ]~~Add spell checker~~
-- [ ]~~ Add function to verify links are correct~~
+- [ ] ~~Add spell checker~~
+- [ ] ~~Add function to verify links are correct~~
 - [x] Limit index generation to 10 items per page
 - [x] Add pagination
 - [x] Update this readme to be more informative
