@@ -66,3 +66,4 @@ type Post struct {
 - [x] put everything under root as outlined in Peter Bourgon's [Go: Best Practices for Production Environments](http://peter.bourgon.org/go-in-production/)
 - [ ] create **newsite** command
 - [ ] better check user data from start so as to not panic and quit right off the bat (better error handling)
+- [ ] Look into creating a file watcher that will re-generate the HTML upon save of md file when we're in preview mode
