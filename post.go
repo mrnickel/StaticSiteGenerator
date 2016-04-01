@@ -22,7 +22,7 @@ const (
 	HTMLPath = "html"
 	// RootPath is the directory path to the root of the website
 	RootPath = ""
-	// The number of posts in a page
+	// PageSize is the number of posts in a page
 	PageSize = 10
 )
 
@@ -204,9 +204,9 @@ func NewPostFromFile(fileInfo os.FileInfo) (Post, error) {
 		} else {
 			tmpPost.markdownContent = tmpPost.MarkdownContent() + "\n" + scanner.Text()
 		}
-
-		tmpPost.markdownContent = strings.TrimSpace(tmpPost.markdownContent)
 	}
+
+	tmpPost.markdownContent = strings.TrimSpace(tmpPost.MarkdownContent())
 
 	return tmpPost, nil
 }
@@ -295,16 +295,10 @@ func generateIndex() error {
 
 	for page := 1; page <= numPages; page++ {
 		startIndex := (page - 1) * PageSize
-		if page > 1 {
-			startIndex = startIndex + 1
-		}
-
 		endIndex := startIndex + PageSize
 		if endIndex > len(posts) {
-			endIndex = len(posts) - 1
+			endIndex = len(posts)
 		}
-
-		fmt.Printf("Page %d, %d - %d\n", page, startIndex, endIndex)
 
 		indexPage := "index.html"
 
@@ -322,6 +316,7 @@ func generateIndex() error {
 		w := bufio.NewWriter(f)
 		indexData := new(Index)
 		indexData.Posts = posts[startIndex:endIndex]
+
 		indexData.HasNext = false
 		indexData.HasPrevious = false
 		if page < numPages {
