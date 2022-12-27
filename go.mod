@@ -1,4 +1,4 @@
-module ryannickel.com/staticsitegenerator
+module github.com/mrnickel/StaticSiteGenerator
 
 go 1.19
 
