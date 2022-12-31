@@ -45,6 +45,14 @@ type Post struct {
 }
 ```
 
+## Create Release
+Creating a tag in the format `vXXX` will kick off a github action to create a new release
+
+```
+git tag vXXX
+git push origin vXXX
+```
+
 # TODO
 - [x] only show the first paragraph on index pages
 - [x] have "preview" start a server session in order to serve up the page
