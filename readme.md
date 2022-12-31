@@ -18,6 +18,7 @@ This project essentially has 2 things that it does
 - `StaticSiteGenerator stats`
 - `StaticSiteGenerator listdrafts`
 - `StaticSiteGenerator preview "*title of post*"`
+- `StaticSiteGenerator regenerate`
 
 #Requirements
 In order to use this VERY basic system you will have to follow a few basic rules:

@@ -35,7 +35,7 @@ type Post interface {
 	HTMLContent() string
 	MarkdownPath() string
 	HTMLPath() string
-	Publish() error
+	Publish(useDate bool) error
 	Update()
 	String() string
 	Preview() error
@@ -215,9 +215,11 @@ func NewPostFromFile(fileInfo os.FileInfo) (Post, error) {
 // and re-generate the index page.
 // Maybe one day I'll add other flags, such as "+tweet" in order to connect to twitter
 // and post on my behalf
-func (p *post) Publish() error {
+func (p *post) Publish(useDate bool) error {
 	p.draft = false
-	p.date = time.Now()
+	if !useDate {
+		p.date = time.Now()
+	}
 	p.Update()
 
 	fileName := TemplatePath + "/post.tmpl"

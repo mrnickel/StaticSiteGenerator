@@ -20,6 +20,7 @@ func main() {
 
 	switch command {
 	case "publish":
+		// publish(os.Args[2])
 		tmpP := NewPost(os.Args[2])
 
 		fmt.Println("Publish the markdown file specified")
@@ -35,7 +36,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = p.Publish()
+		err = p.Publish(false)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -89,6 +90,21 @@ func main() {
 		http.HandleFunc("/", staticHandler)
 		http.ListenAndServe(":8080", nil)
 
+	case "regenerate":
+		fmt.Println("Regenerating all published posts")
+
+		posts := GetPublishedPosts()
+		//sort posts by date descending
+		for i := 0; i < len(posts)/2; i++ {
+			posts[i], posts[len(posts)-1-i] = posts[len(posts)-1-i], posts[i]
+		}
+
+		for _, post := range posts {
+			fmt.Println(fmt.Sprintf("%s -- %s", post.Title(), post.Date()))
+			post.Publish(true)
+		}
+
+		return
 	default:
 		printHelp()
 	}
@@ -103,7 +119,30 @@ func printHelp() {
 	fmt.Println("preview \"Blog Title here\"")
 	fmt.Println("newsite (creates a new site -- still needs to be implemented)")
 	fmt.Println("standup (this will start a web server that can handle requests)")
+	fmt.Println("regenerate (this will regenerate all published pages with the new templates)")
 }
+
+// func publish(file string) {
+// 	tmpP := NewPost(file)
+
+// 	fmt.Println("Publish the markdown file specified")
+// 	file, err := os.Open(tmpP.MarkdownPath())
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	fileInfo, err := file.Stat()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	p, err := NewPostFromFile(fileInfo)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	err = p.Publish()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// }
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {
 
