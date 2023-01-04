@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"runtime"
 	"strings"
 )
 
@@ -80,19 +81,14 @@ func main() {
 
 		fmt.Printf("Launching your browser and go to http://localhost:8080/%s", p.HTMLPath())
 
-		cmd := exec.Command("open", fmt.Sprintf("http://localhost:8080/%s", p.HTMLPath()))
-		err = cmd.Run()
-		if err != nil {
-			panic(err)
-		}
-
 		http.HandleFunc("/", makeGzipHandler(staticHandler))
 		http.ListenAndServe(":8080", nil)
+		openbrowser(fmt.Sprintf("http://localhost:8080/%s", p.HTMLPath()))
 	case "standup":
 		fmt.Println("Now listening on port 8080. Visit http://localhost:8080")
 		http.HandleFunc("/", makeGzipHandler(staticHandler))
 		http.ListenAndServe(":8080", nil)
-
+		openbrowser("http://localhost:8080")
 	case "regenerate":
 		fmt.Println("Regenerating all published posts")
 
@@ -192,4 +188,23 @@ func staticHandler(w http.ResponseWriter, r *http.Request) {
 	_, filename := path.Split(r.URL.Path[1:])
 	t := fileStat.ModTime()
 	http.ServeContent(w, r, filename, t, file)
+}
+
+func openbrowser(url string) {
+	var err error
+
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", url).Start()
+	case "windows":
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
