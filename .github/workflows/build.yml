@@ -62,8 +62,8 @@ jobs:
             ### Arch Linux (x86_64)
             ```bash
             # Download and install the package
-            wget https://github.com/mrnickel/StaticSiteGenerator/releases/download/${{ steps.version.outputs.VERSION }}/ssg-${{ steps.version.outputs.VERSION_NO_V }}-1-x86_64.pkg.tar.xz
-            sudo pacman -U ssg-${{ steps.version.outputs.VERSION_NO_V }}-1-x86_64.pkg.tar.xz
+            wget https://github.com/mrnickel/StaticSiteGenerator/releases/download/${{ steps.version.outputs.VERSION }}/ssg-${{ steps.version.outputs.VERSION_NO_V }}-1-x86_64.pkg.tar.zst
+            sudo pacman -U ssg-${{ steps.version.outputs.VERSION_NO_V }}-1-x86_64.pkg.tar.zst
             ```
 
             ### Manual Installation
@@ -71,7 +71,7 @@ jobs:
           files: |
             darwin-arm64-${{ steps.version.outputs.VERSION }}.tar.gz
             linux-amd64-${{ steps.version.outputs.VERSION }}.tar.gz
-            ssg-${{ steps.version.outputs.VERSION_NO_V }}-1-x86_64.pkg.tar.xz
+            dist/ssg-${{ steps.version.outputs.VERSION_NO_V }}-1-x86_64.pkg.tar.zst
             ssg.rb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

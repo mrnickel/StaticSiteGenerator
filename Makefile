@@ -58,7 +58,7 @@ release: package arch-package homebrew-formula
 	@echo "Release packages created:"
 	@echo "  - darwin-arm64-$(VERSION).tar.gz (Homebrew)"
 	@echo "  - linux-amd64-$(VERSION).tar.gz (Manual install)"
-	@echo "  - ssg-$(VERSION:v%=%)-1-x86_64.pkg.tar.xz (Arch Linux)"
+	@echo "  - dist/ssg-$(VERSION:v%=%)-1-x86_64.pkg.tar.zst (Arch Linux)"
 	@echo "  - ssg.rb (Homebrew formula)"
 
 # Clean build artifacts
@@ -67,6 +67,7 @@ clean:
 	rm -rf dist/
 	rm -f ssg
 	rm -f *.tar.gz
+	rm -f *.pkg.tar.zst
 	rm -f *.pkg.tar.xz
 	rm -f ssg.rb
 
