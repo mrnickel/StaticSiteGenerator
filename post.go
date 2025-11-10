@@ -13,7 +13,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/russross/blackfriday"
+	"github.com/russross/blackfriday/v2"
 )
 
 const (
@@ -102,7 +102,7 @@ func (p *post) MarkdownContent() string {
 
 // HTMLContent returns the post structs private hTMLContent field
 func (p *post) HTMLContent() string {
-	html := blackfriday.MarkdownCommon([]byte(p.markdownContent))
+	html := blackfriday.Run([]byte(p.markdownContent))
 	return string(html[:])
 }
 
@@ -183,7 +183,7 @@ func (p *post) Summary() string {
 		panic("No content found in post")
 	}
 
-	htmlContent := blackfriday.MarkdownCommon([]byte(paragraphs[0]))
+	htmlContent := blackfriday.Run([]byte(paragraphs[0]))
 	return string(htmlContent[:])
 }
 
