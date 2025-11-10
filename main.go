@@ -14,6 +14,9 @@ import (
 	"strings"
 )
 
+// Version is set at build time via ldflags
+var version = "dev"
+
 func main() {
 
 	if len(os.Args) <= 1 || os.Args[1] == "help" {
@@ -116,6 +119,9 @@ func main() {
 		}
 
 		return
+	case "version":
+		fmt.Printf("Static Site Generator version %s\n", version)
+		return
 	default:
 		printHelp()
 	}
@@ -131,6 +137,7 @@ func printHelp() {
 	fmt.Println("newsite (creates a new site -- still needs to be implemented)")
 	fmt.Println("standup [port] (this will start a web server that can handle requests, default port: 8080)")
 	fmt.Println("regenerate (this will regenerate all published pages with the new templates)")
+	fmt.Println("version (display version information)")
 }
 
 // func publish(file string) {
