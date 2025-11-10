@@ -4,8 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"html"
 	"math"
+	"net/url"
 	"os"
+	"regexp"
 	"strings"
 	"text/template"
 	"time"
@@ -31,10 +34,12 @@ type Post interface {
 	Date() time.Time
 	Draft() bool
 	Title() string
+	TitleHTML() string
 	MarkdownContent() string
 	HTMLContent() string
 	MarkdownPath() string
 	HTMLPath() string
+	HTMLPathURL() string
 	Publish(useDate bool) error
 	Update()
 	String() string
@@ -85,6 +90,11 @@ func (p *post) Title() string {
 	return p.title
 }
 
+// TitleHTML returns an HTML-escaped version of the title for safe use in HTML
+func (p *post) TitleHTML() string {
+	return html.EscapeString(p.title)
+}
+
 // MarkdownContent returns the post structs private markdownContent field
 func (p *post) MarkdownContent() string {
 	return p.markdownContent
@@ -97,7 +107,33 @@ func (p *post) HTMLContent() string {
 }
 
 func (p *post) filePrefix() string {
-	return strings.Replace(strings.ToLower(p.title), " ", "_", -1)
+	// First, escape HTML entities in the title
+	safe := html.EscapeString(p.title)
+	
+	// Convert to lowercase
+	safe = strings.ToLower(safe)
+	
+	// Replace spaces with underscores
+	safe = strings.Replace(safe, " ", "_", -1)
+	
+	// Remove or replace other problematic characters for filenames
+	// Keep only alphanumeric, underscores, hyphens, and dots
+	reg := regexp.MustCompile(`[^a-z0-9_\-\.]`)
+	safe = reg.ReplaceAllString(safe, "")
+	
+	// Remove multiple consecutive underscores
+	reg = regexp.MustCompile(`_+`)
+	safe = reg.ReplaceAllString(safe, "_")
+	
+	// Trim leading/trailing underscores
+	safe = strings.Trim(safe, "_")
+	
+	// Ensure we have something valid - if empty, use a timestamp
+	if safe == "" {
+		safe = fmt.Sprintf("post_%d", time.Now().Unix())
+	}
+	
+	return safe
 }
 
 func (p *post) MarkdownPath() string {
@@ -110,6 +146,11 @@ func (p *post) SetMarkdownContent(content string) {
 
 func (p *post) HTMLPath() string {
 	return fmt.Sprintf("%s/%s.html", HTMLPath, p.filePrefix())
+}
+
+// HTMLPathURL returns a URL-encoded version of the HTML path for safe use in URLs
+func (p *post) HTMLPathURL() string {
+	return url.QueryEscape(p.HTMLPath())
 }
 
 // String returns the posts string value that we would
@@ -139,11 +180,11 @@ func (p *post) Summary() string {
 	paragraphs := strings.Split(p.MarkdownContent(), "\n")
 
 	if len(paragraphs) == 0 {
-		panic("shit")
+		panic("No content found in post")
 	}
 
-	html := blackfriday.MarkdownCommon([]byte(paragraphs[0]))
-	return string(html[:])
+	htmlContent := blackfriday.MarkdownCommon([]byte(paragraphs[0]))
+	return string(htmlContent[:])
 }
 
 // Update will update the .md file associated with this post. Typically
@@ -363,7 +404,7 @@ func generateRss() error {
 
 	endIndex := PageSize
 	if endIndex > len(posts) {
-		endIndex = len(posts) - 1
+		endIndex = len(posts)
 	}
 
 	t.Execute(w, posts[0:endIndex])

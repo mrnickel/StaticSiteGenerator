@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -85,10 +86,21 @@ func main() {
 		http.ListenAndServe(":8080", nil)
 		openbrowser(fmt.Sprintf("http://localhost:8080/%s", p.HTMLPath()))
 	case "standup":
-		fmt.Println("Now listening on port 8080. Visit http://localhost:8080")
+		port := "8080" 
+		
+		if len(os.Args) > 2 {
+			providedPort := os.Args[2]
+			if portNum, err := strconv.Atoi(providedPort); err == nil && portNum > 0 && portNum < 65536 {
+				port = providedPort
+			} else {
+				fmt.Printf("Invalid port '%s'. Using default port 8080.\n", providedPort)
+			}
+		}
+		
+		fmt.Printf("Now listening on port %s. Visit http://localhost:%s\n", port, port)
 		http.HandleFunc("/", makeGzipHandler(staticHandler))
-		http.ListenAndServe(":8080", nil)
-		openbrowser("http://localhost:8080")
+		http.ListenAndServe(":"+port, nil)
+		openbrowser("http://localhost:" + port)
 	case "regenerate":
 		fmt.Println("Regenerating all published posts")
 
@@ -99,7 +111,7 @@ func main() {
 		}
 
 		for _, post := range posts {
-			fmt.Println(fmt.Sprintf("%s -- %s", post.Title(), post.Date()))
+			fmt.Printf("%s -- %s\n", post.Title(), post.Date())
 			post.Publish(true)
 		}
 
@@ -117,7 +129,7 @@ func printHelp() {
 	fmt.Println("listdrafts (this will list the titles of all your posts still in draft mode)")
 	fmt.Println("preview \"Blog Title here\"")
 	fmt.Println("newsite (creates a new site -- still needs to be implemented)")
-	fmt.Println("standup (this will start a web server that can handle requests)")
+	fmt.Println("standup [port] (this will start a web server that can handle requests, default port: 8080)")
 	fmt.Println("regenerate (this will regenerate all published pages with the new templates)")
 }
 
