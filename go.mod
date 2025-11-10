@@ -1,5 +1,5 @@
 module github.com/mrnickel/StaticSiteGenerator
 
-go 1.19
+go 1.25.4
 
 require github.com/russross/blackfriday v1.6.0
