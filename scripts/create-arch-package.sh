@@ -57,8 +57,17 @@ EOF
 
 # Create the package archive with proper ordering
 cd pkg
-tar -czf "../dist/$PKGNAME-$VERSION_NO_V-1-x86_64.pkg.tar.zst" --format=gnu --sort=name .PKGINFO .MTREE usr/
+tar -cf "../dist/$PKGNAME-$VERSION_NO_V-1-x86_64.pkg.tar" --format=gnu --sort=name .PKGINFO .MTREE usr/
 cd ..
+
+# Compress with zstd
+if command -v zstd >/dev/null 2>&1; then
+    zstd "dist/$PKGNAME-$VERSION_NO_V-1-x86_64.pkg.tar" -o "dist/$PKGNAME-$VERSION_NO_V-1-x86_64.pkg.tar.zst"
+    rm "dist/$PKGNAME-$VERSION_NO_V-1-x86_64.pkg.tar"
+else
+    echo "Warning: zstd not found, package may not be valid for pacman"
+    mv "dist/$PKGNAME-$VERSION_NO_V-1-x86_64.pkg.tar" "dist/$PKGNAME-$VERSION_NO_V-1-x86_64.pkg.tar.zst"
+fi
 
 # Clean up
 rm -rf pkg
