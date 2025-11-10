@@ -44,16 +44,7 @@ package: build-release
 .PHONY: arch-package
 arch-package: build-release
 	@echo "Creating Arch Linux package..."
-	@command -v fpm >/dev/null 2>&1 || { echo >&2 "fpm is required but not installed. Install with: gem install fpm"; exit 1; }
-	
-	fpm -s dir -t pacman \
-		-n ssg \
-		-v $(VERSION:v%=%) \
-		--description "Static Site Generator written in Go" \
-		--maintainer "mrnickel <your-email@example.com>" \
-		--license "MIT" \
-		--url "https://github.com/mrnickel/StaticSiteGenerator" \
-		dist/ssg-linux-amd64=/usr/local/bin/ssg
+	./scripts/create-arch-package.sh $(VERSION)
 
 # Create Homebrew formula
 .PHONY: homebrew-formula
@@ -96,7 +87,7 @@ help:
 	@echo "  build           - Build for current platform"
 	@echo "  build-release   - Build for release platforms (macOS ARM64, Linux x86_64)"
 	@echo "  package         - Create release tarballs"
-	@echo "  arch-package    - Create Arch Linux package (requires fpm)"
+	@echo "  arch-package    - Create Arch Linux package"
 	@echo "  homebrew-formula - Create Homebrew formula"
 	@echo "  release         - Create all release packages"
 	@echo "  clean           - Clean build artifacts"
