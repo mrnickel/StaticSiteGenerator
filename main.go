@@ -119,6 +119,10 @@ func main() {
 		}
 
 		return
+	case "uuidify":
+		fmt.Println("Adding GUIDs to all markdown posts that don't have one")
+		uuidify()
+		return
 	case "version":
 		fmt.Printf("Static Site Generator version %s\n", version)
 		return
@@ -137,6 +141,7 @@ func printHelp() {
 	fmt.Println("newsite (creates a new site -- still needs to be implemented)")
 	fmt.Println("standup [port] (this will start a web server that can handle requests, default port: 8080)")
 	fmt.Println("regenerate (this will regenerate all published pages with the new templates)")
+	fmt.Println("uuidify (adds GUIDs to all markdown posts that don't have one)")
 	fmt.Println("version (display version information)")
 }
 
@@ -226,4 +231,52 @@ func openbrowser(url string) {
 		log.Fatal(err)
 	}
 
+}
+
+// uuidify loops through all markdown files and adds a GUID to posts that don't have one
+func uuidify() {
+	files, err := os.ReadDir(MarkdownPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	updated := 0
+	skipped := 0
+
+	for _, file := range files {
+		if file.IsDir() || !strings.HasSuffix(file.Name(), ".md") {
+			continue
+		}
+
+		fileInfo, err := file.Info()
+		if err != nil {
+			log.Printf("Error reading file info for %s: %v\n", file.Name(), err)
+			continue
+		}
+
+		post, err := NewPostFromFile(fileInfo)
+		if err != nil {
+			log.Printf("Error parsing post %s: %v\n", file.Name(), err)
+			continue
+		}
+
+		// Check if post already has a GUID
+		if post.GUID() != "" {
+			fmt.Printf("✓ Skipping %s (already has GUID: %s)\n", post.Title(), post.GUID())
+			skipped++
+			continue
+		}
+
+		// Generate and set a new GUID
+		newGUID := GenerateGUID()
+		post.SetGUID(newGUID)
+		
+		fmt.Printf("+ Adding GUID to %s: %s\n", post.Title(), newGUID)
+		post.Update()
+		updated++
+	}
+
+	fmt.Printf("\nSummary:\n")
+	fmt.Printf("  Updated: %d posts\n", updated)
+	fmt.Printf("  Skipped: %d posts\n", skipped)
 }

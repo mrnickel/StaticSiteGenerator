@@ -57,7 +57,7 @@ EOF
 
 # Create the package archive with proper ordering
 cd pkg
-tar -cf "../dist/$PKGNAME-$VERSION_NO_V-1-x86_64.pkg.tar" --format=gnu --sort=name .PKGINFO .MTREE usr/
+wtar -cf "../dist/$PKGNAME-$VERSION_NO_V-1-x86_64.pkg.tar" --format=gnu --sort=name .PKGINFO .MTREE usr/
 cd ..
 
 # Compress with zstd

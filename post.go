@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"crypto/rand"
 	"fmt"
 	"html"
 	"math"
@@ -35,6 +36,8 @@ type Post interface {
 	Draft() bool
 	Title() string
 	TitleHTML() string
+	GUID() string
+	SetGUID(guid string)
 	MarkdownContent() string
 	HTMLContent() string
 	MarkdownPath() string
@@ -57,6 +60,7 @@ type post struct {
 	date            time.Time
 	draft           bool
 	title           string
+	guid            string
 	markdownContent string
 }
 
@@ -93,6 +97,16 @@ func (p *post) Title() string {
 // TitleHTML returns an HTML-escaped version of the title for safe use in HTML
 func (p *post) TitleHTML() string {
 	return html.EscapeString(p.title)
+}
+
+// GUID returns the post structs private guid field
+func (p *post) GUID() string {
+	return p.guid
+}
+
+// SetGUID sets the GUID for the post
+func (p *post) SetGUID(guid string) {
+	p.guid = guid
 }
 
 // MarkdownContent returns the post structs private markdownContent field
@@ -167,6 +181,7 @@ func (p *post) String() string {
 	}
 
 	buffer.WriteString("title: " + p.title + "\n")
+	buffer.WriteString("guid: " + p.guid + "\n")
 	buffer.WriteString("---\n")
 	buffer.WriteString("\n")
 
@@ -199,6 +214,22 @@ func (p *post) Update() {
 	file.WriteString(p.String())
 }
 
+// GenerateGUID creates a new UUID v4
+func GenerateGUID() string {
+	uuid := make([]byte, 16)
+	_, err := rand.Read(uuid)
+	if err != nil {
+		panic(err)
+	}
+	
+	// Set version (4) and variant bits
+	uuid[6] = (uuid[6] & 0x0f) | 0x40 // Version 4
+	uuid[8] = (uuid[8] & 0x3f) | 0x80 // Variant RFC4122
+	
+	return fmt.Sprintf("%x-%x-%x-%x-%x",
+		uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:16])
+}
+
 // NewPost creates a new Post struct and defaults the time
 // to right now, the draft value to true and the title to the
 // specified title
@@ -207,6 +238,7 @@ func NewPost(title string) Post {
 	p.date = time.Now()
 	p.draft = true
 	p.title = title
+	p.guid = GenerateGUID()
 
 	return p
 }
@@ -239,7 +271,10 @@ func NewPostFromFile(fileInfo os.FileInfo) (Post, error) {
 			}
 		} else if parsingHeader && strings.HasPrefix(scanner.Text(), "title") {
 			tmpPost.title = strings.TrimPrefix(scanner.Text(), "title: ")
+		} else if parsingHeader && strings.HasPrefix(scanner.Text(), "guid") {
+			tmpPost.guid = strings.TrimPrefix(scanner.Text(), "guid: ")
 		} else if parsingHeader && scanner.Text() == "---" {
+			parsingHeader = false
 		} else if !parsingHeader && tmpPost.MarkdownContent() == "" {
 			tmpPost.markdownContent = scanner.Text()
 		} else {
